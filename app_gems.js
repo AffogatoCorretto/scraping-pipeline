@@ -23,10 +23,20 @@ const Papa = require('papaparse');
   const schema = jsonSchema({
     type: "object",
     properties: {
-      place_name: { type: "string" },
-      place_description: { type: "string" },
+      places: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            place_name: { type: "string" },
+            place_description: { type: "string" },
+          },
+          required: ["place_name", "place_description"],
+          additionalProperties: false,
+        },
+      },
     },
-    required: ["place_name", "place_description"],
+    required: ["places"],
     additionalProperties: false,
   });
 
@@ -50,7 +60,7 @@ const Papa = require('papaparse');
     process.exit(1);
   }
 
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < linksToProcess.length; i++) {
     const link = linksToProcess[i];
     console.log(`Processing link ${i + 1}/${linksToProcess.length}: ${link}`);
 
@@ -93,7 +103,8 @@ const Papa = require('papaparse');
       });      
 
       const data = result.object;
-      console.log(data);
+      
+      
 
     } catch (error) {
       console.error(`Error processing link ${link}:`, error);
