@@ -49,7 +49,7 @@ const Papa = require('papaparse');
 
     parsedData.forEach(row => {
       if (row.links && row.status) {
-        gemLinksData.push({ link: row.links.trim(), status: row.status.trim() });
+        gemLinksData.push({ links: row.links.trim(), status: row.status.trim() });
         if (row.status.trim() === 'not_extracted') {
           linksToProcess.push(row.links.trim());
         }
@@ -74,12 +74,19 @@ const Papa = require('papaparse');
     fs.writeFileSync(extractedGemsFilePath, 'place_name,place_description\n');
   }
 
+  console.log(`Links to process: ${linksToProcess.length}`)
+
   for (let i = 0; i < linksToProcess.length; i++) {
     const link = linksToProcess[i];
     console.log(`Processing link ${i + 1}/${linksToProcess.length}: ${link}`);
 
     try {
-      await page.goto(link, { timeout: 60000, waitUntil: 'networkidle' });
+        try{
+            await page.goto(link, { timeout: 5000, waitUntil: 'networkidle' });
+        }
+        catch(error){
+            console.error(`Error processing the link: ${link}`,error)
+        }
       const content = await page.evaluate(() => {
         return document.body.innerText;
       });
@@ -93,7 +100,7 @@ const Papa = require('papaparse');
       You are a highly skilled content parser. Your task is to analyze the following webpage content and extract information about "hidden gem" places. A "hidden gem" is defined as a unique or lesser-known place that stands out for its beauty, uniqueness, cultural significance, or charm.
       
       For each hidden gem:
-      - Extract the name of the place. The name should be accurate, concise, and directly derived from the content.
+      - Extract the name of the place. The name should be accurate, concise, and directly derived from the content[dont be a general neighbourhood].
       - Extract a description of the place. The description should summarize why the place is special, including key attributes like ambiance, features, and appeal.
       
       The output must be in JSON format as follows:
@@ -136,7 +143,7 @@ const Papa = require('papaparse');
       }
 
       for (let j = 0; j < gemLinksData.length; j++) {
-        if (gemLinksData[j].link === link) {
+        if (gemLinksData[j].links === link) {
           gemLinksData[j].status = 'extracted';
           break;
         }
@@ -149,7 +156,7 @@ const Papa = require('papaparse');
       console.error(`Error processing link ${link}:`, error);
 
       for (let j = 0; j < gemLinksData.length; j++) {
-        if (gemLinksData[j].link === link) {
+        if (gemLinksData[j].links === link) {
           gemLinksData[j].status = 'failed';
           break;
         }

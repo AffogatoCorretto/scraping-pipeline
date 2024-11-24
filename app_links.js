@@ -17,6 +17,14 @@ const path = require('path');
 
   const queries = [
     'hidden gems in nyc',
+    'hidden gems arts & culture in nyc',
+    'hidden gems natural parks in nyc',
+    'underrated non tourist places in nyc',
+    'underrated places to visit in nyc',
+    'hidden gems brooklyn',
+    'secret spots in nyc',
+    'secret dating places in nyc',
+    'secret romantic places in nyc'
   ];
 
   const googleGemsFilePath = 'data/google_gems.csv';
@@ -118,7 +126,7 @@ const path = require('path');
       if (links[i] && !existingLinks.has(links[i])) {
         existingLinks.add(links[i]);
         const csvRow = Papa.unparse([{ links: links[i].trim(), status: 'not_extracted' }], { header: false });
-        fs.appendFileSync(gemlinksFilePath, `${csvRow}\n`);
+        fs.appendFileSync(gemlinksFilePath, `\n${csvRow}`);
       }
     }
     
