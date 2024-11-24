@@ -1,0 +1,19 @@
+{
+  "name": "scraping-pipeline",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start:extract_links": "node app_links.js",
+    "start:extract_gems": "node app_gems.js"
+  },
+  "author": "Prasanna",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ai-sdk/openai": "^1.0.4",
+    "ai": "^4.0.3",
+    "openai": "^4.73.0",
+    "papaparse": "^5.4.1",
+    "playwright": "^1.49.0"
+  }
+}
