@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "start:extract_links": "node app_links.js",
-    "start:extract_gems": "node app_gems.js"
+    "start:extract_gems": "node --env-file=.env app_gems.js"
   },
   "author": "Prasanna",
   "license": "ISC",

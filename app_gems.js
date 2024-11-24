@@ -14,8 +14,9 @@ const Papa = require('papaparse');
   const gemLinksFilePath = 'data/gem_links.csv';
   const extractedGemsFilePath = 'data/extracted_gems.csv';
 
+  console.log(process.env.OPENAI_API_KEY);
   const openai = createOpenAI({
-    apiKey: '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',
+    apiKey: process.env.OPENAI_API_KEY,
   });
   const model = openai.chat("gpt-4o-2024-08-06", { structuredOutputs: true });
 
