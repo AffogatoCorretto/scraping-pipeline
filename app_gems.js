@@ -14,7 +14,6 @@ const Papa = require('papaparse');
   const gemLinksFilePath = 'data/gem_links.csv';
   const extractedGemsFilePath = 'data/extracted_gems.csv';
 
-  console.log(process.env.OPENAI_API_KEY);
   const openai = createOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -42,6 +41,7 @@ const Papa = require('papaparse');
 
   let linksToProcess = [];
   let gemLinksData = [];
+  let existingPlaces = new Set();
 
   if (fs.existsSync(gemLinksFilePath)) {
     const csvData = fs.readFileSync(gemLinksFilePath, 'utf-8');
@@ -58,6 +58,20 @@ const Papa = require('papaparse');
   } else {
     console.error('gem_links.csv not found.');
     process.exit(1);
+  }
+
+  if (fs.existsSync(extractedGemsFilePath)) {
+    const extractedCsvData = fs.readFileSync(extractedGemsFilePath, 'utf-8');
+    const parsedExtractedData = Papa.parse(extractedCsvData, { header: true, skipEmptyLines: true }).data;
+
+    parsedExtractedData.forEach(row => {
+      if (row.place_name && row.place_description) {
+        existingPlaces.add(`${row.place_name.trim()}|${row.place_description.trim()}`);
+      }
+    });
+  } else {
+    fs.mkdirSync(path.dirname(extractedGemsFilePath), { recursive: true });
+    fs.writeFileSync(extractedGemsFilePath, 'place_name,place_description\n');
   }
 
   for (let i = 0; i < linksToProcess.length; i++) {
@@ -104,7 +118,32 @@ const Papa = require('papaparse');
 
       const data = result.object;
       
-      
+      if (data.places && data.places.length > 0) {
+        const newPlaces = [];
+
+        data.places.forEach(place => {
+          const placeKey = `${place.place_name.trim()}|${place.place_description.trim()}`;
+          if (!existingPlaces.has(placeKey)) {
+            existingPlaces.add(placeKey);
+            newPlaces.push(place);
+          }
+        });
+
+        if (newPlaces.length > 0) {
+          const newPlacesCsv = Papa.unparse(newPlaces, { header: false });
+          fs.appendFileSync(extractedGemsFilePath, `\n${newPlacesCsv}`);
+        }
+      }
+
+      for (let j = 0; j < gemLinksData.length; j++) {
+        if (gemLinksData[j].link === link) {
+          gemLinksData[j].status = 'extracted';
+          break;
+        }
+      }
+
+      const updatedCsv = Papa.unparse(gemLinksData, { header: true });
+      fs.writeFileSync(gemLinksFilePath, updatedCsv);
 
     } catch (error) {
       console.error(`Error processing link ${link}:`, error);
@@ -117,10 +156,6 @@ const Papa = require('papaparse');
       }
     }
   }
-
-  // Write gem_links.csv using PapaParse
-//   const updatedCsv = Papa.unparse(gemLinksData, { header: true });
-//   fs.writeFileSync(gemLinksFilePath, updatedCsv);
 
   await browser.close();
 })();
