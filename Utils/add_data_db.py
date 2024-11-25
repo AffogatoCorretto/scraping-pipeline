@@ -6,11 +6,11 @@ def format_place_data(row):
     """Format the data according to the API's expected structure."""
     # Load JSON fields safely
     coordinates = row["place_coordinates"].split(",") if pd.notna(row["place_coordinates"]) else [None, None]
-    categories = json.loads(row["place_categories"]) if pd.notna(row["place_categories"]) else []
-    sub_categories = json.loads(row["place_sub_categories"]) if pd.notna(row["place_sub_categories"]) else []
+    categories = row["place_categories"] if pd.notna(row["place_categories"]) else []
+    sub_categories = row["place_sub_categories"].split(",") if pd.notna(row["place_sub_categories"]) else []
     image_urls = row["place_images"].split(",") if pd.notna(row["place_images"]) else []
-    keywords = json.loads(row["place_keywords"]) if pd.notna(row["place_keywords"]) else []
-    reviews = json.loads(row["place_reviews"]) if pd.notna(row["place_reviews"]) else []
+    keywords = row["place_keywords"].split(",") if pd.notna(row["place_keywords"]) else []
+    reviews = row["place_reviews"].split(",") if pd.notna(row["place_reviews"]) else []
     opening_hours = json.loads(row["place_hours"]) if pd.notna(row["place_hours"]) else {}
 
     formatted_data = {
@@ -33,7 +33,7 @@ def format_place_data(row):
         # Fields for the 'ratings' table
         "rating": {
             "averageRating": float(row["place_ratings"]) if pd.notna(row["place_ratings"]) else None,
-            "reviewCount": int(row["place_reviews_count"]) if pd.notna(row["place_reviews_count"]) else None,
+            "reviewCount": int(row["place_reviews_count"].replace(",","")) if pd.notna(row["place_reviews_count"]) else None,
         },
 
         # 'reviews' data
