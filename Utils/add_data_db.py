@@ -16,7 +16,7 @@ def format_place_data(row):
     formatted_data = {
         # Fields for the 'items' table
         "itemName": row["place_name"],
-        "category": categories[0] if categories else None,
+        "category": categories if categories else None,
         "subCategory": sub_categories,
         "description": row.get("place_descriptions", ""),
         "latitude": float(coordinates[0]) if coordinates[0] else None,
