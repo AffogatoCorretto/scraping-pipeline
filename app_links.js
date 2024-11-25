@@ -41,7 +41,7 @@ const path = require('path');
     });
   } else {
     fs.mkdirSync(path.dirname(googleGemsFilePath), { recursive: true });
-    fs.writeFileSync(googleGemsFilePath, 'place_name,place_description\n');
+    fs.writeFileSync(googleGemsFilePath, 'place_name,place_description,status\n');
   }
 
   let existingLinks = new Set();
@@ -82,7 +82,7 @@ const path = require('path');
             
             if (placeName && !existingPlaces.has(placeName)) {
                 existingPlaces.add(placeName);
-                const csvRow = Papa.unparse([{ place_name: placeName.trim(), place_description: placeDescription.trim() }], { header: false });
+                const csvRow = Papa.unparse([{ place_name: placeName.trim(), place_description: placeDescription.trim(), status: "not_extracted" }], { header: false });
                 fs.appendFileSync(googleGemsFilePath, `${csvRow}\n`);
             }
         }

@@ -4,7 +4,8 @@
   "main": "app.js",
   "scripts": {
     "start:extract_links": "node app_links.js",
-    "start:extract_gems": "node --env-file=.env app_gems.js"
+    "start:extract_gems": "node --env-file=.env app_gems.js",
+    "start:extract_details": "node --env-file=.env app_details.js"
   },
   "author": "Prasanna",
   "license": "ISC",
@@ -12,6 +13,8 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.0.4",
     "ai": "^4.0.3",
+    "axios": "^1.7.7",
+    "jsdom": "^25.0.1",
     "openai": "^4.73.0",
     "papaparse": "^5.4.1",
     "playwright": "^1.49.0"

@@ -71,7 +71,7 @@ const Papa = require('papaparse');
     });
   } else {
     fs.mkdirSync(path.dirname(extractedGemsFilePath), { recursive: true });
-    fs.writeFileSync(extractedGemsFilePath, 'place_name,place_description\n');
+    fs.writeFileSync(extractedGemsFilePath, 'place_name,place_description,status\n');
   }
 
   console.log(`Links to process: ${linksToProcess.length}`)
@@ -129,7 +129,7 @@ const Papa = require('papaparse');
         const newPlaces = [];
 
         data.places.forEach(place => {
-          const placeKey = `${place.place_name.trim()}|${place.place_description.trim()}`;
+          const placeKey = `${place.place_name.trim()}|${place.place_description.trim()}|not_extracted`;
           if (!existingPlaces.has(placeKey)) {
             existingPlaces.add(placeKey);
             newPlaces.push(place);
