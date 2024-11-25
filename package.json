@@ -5,7 +5,8 @@
   "scripts": {
     "start:extract_links": "node app_links.js",
     "start:extract_gems": "node --env-file=.env app_gems.js",
-    "start:extract_details": "node --env-file=.env app_details.js"
+    "start:extract_details": "node --env-file=.env app_details.js",
+    "update:coords": "node Utils/update_coordinates.js"
   },
   "author": "Prasanna",
   "license": "ISC",
