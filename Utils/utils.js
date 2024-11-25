@@ -19,5 +19,13 @@ async function fetchWebsiteContent(websites) {
     return combinedContent;
 }
 
+function extractCoordinates(url) {
+    const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) {
+        return { lat: match[1], lng: match[2] };
+    }
+    return null;
+}
 
-module.exports = {fetchWebsiteContent}
+
+module.exports = {fetchWebsiteContent, extractCoordinates}
