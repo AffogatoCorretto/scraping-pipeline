@@ -5,7 +5,7 @@ const path = require('path');
 const { generateObject, jsonSchema } = require('ai'); 
 const { createOpenAI } = require('@ai-sdk/openai');
 const { PlaceModel, place_categories } = require('./constants/placeDetails');
-const { fetchWebsiteContent } = require('./Utils/utils');
+const { fetchWebsiteContent, extractCoordinates } = require('./Utils/utils');
 const { classifyAIObject } = require('./constants/aiStructure');
 
 async function __scroll_to_bottom(page, classname, repeat){
@@ -207,6 +207,15 @@ async function extractWebsiteContents(page_details){
             let placeAddressDiv = await page.$('[data-item-id="address"]');
             if(placeAddressDiv){
                 place_details.place_address = (await placeAddressDiv.textContent()).trim();
+            }
+        }
+
+        //Extracting place_coordinates
+        if(place_details.place_coordinates == ''){
+            await page.waitForFunction(() => window.location.href.includes('@'), { timeout: 1500 });
+            const coordinates = extractCoordinates(page.url());
+            if (coordinates) {
+                place_details.place_coordinates = `${coordinates.lat},${coordinates.lng}`;
             }
         }
 
