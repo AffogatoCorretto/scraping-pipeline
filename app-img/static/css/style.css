@@ -1,0 +1,22 @@
+#image-gallery img {
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s;
+}
+
+#image-gallery img.selected {
+    border-color: rgba(0, 0, 0, 0.446);
+}
+
+.selectable-image {
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s;
+}
+
+.selectable-image.selected {
+    border: 2px solid rgb(0, 0, 0);
+}

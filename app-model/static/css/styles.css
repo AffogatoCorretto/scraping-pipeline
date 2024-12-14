@@ -1,0 +1,220 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Container that holds everything */
+.container {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 50px;
+}
+
+/* Main flow line (horizontal) */
+.main-flow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 400px auto; /* Position the main flow line lower */
+}
+
+/* Base styling for nodes */
+.node {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px; /* Reduced padding */
+  width: 250px; /* Increased width for more room */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.node h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Additional nodes sections */
+.top-nodes, .bottom-nodes {
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+
+.top-nodes {
+  top: 0;
+}
+
+/* Move bottom nodes closer to main flow */
+.bottom-nodes {
+  top: 550px; 
+}
+
+.extra-node {
+  position: absolute;
+}
+
+.google-box {
+  top: 50px;
+  left: 10%;
+}
+
+.reddit-box {
+  top: 140px;
+  left: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  width: 300px;
+}
+.reddit-img {
+  width: 100%; /* Slight padding around the edges */
+  border-radius: 20px; /* Match node's corner radius */
+  display: block;
+}
+
+.social-box {
+  left: 25%;
+  top: 100px;
+}
+.another-extra-box {
+  bottom: 50px; 
+  left: 50%;
+}
+
+/* SVG overlay for connections */
+.connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.connection-path {
+  stroke: #444;
+  stroke-width: 2;
+  fill: none;
+}
+
+.google-box {
+  top: 50px;
+  left: 10%;
+  width: 300px; /* Slightly larger for modern look */
+  background: #fff;
+  border: 1px solid #ddd; /* Lighter border for a clean look */
+  border-radius: 12px;
+  padding: 15px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.google-box:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.google-search-bar {
+  display: flex;
+  align-items: center;
+  background: #f1f1f1;
+  border-radius: 20px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.google-g {
+  margin-right: 8px;
+}
+
+.typewriter {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #333;
+  padding-right: 4px;
+  box-sizing: border-box;
+  min-height: 16px;
+}
+
+/* Initially hide the links */
+.google-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  font-size: 14px;
+  line-height: 1.5em;
+}
+
+.google-box.show-links ul {
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.google-box ul li {
+  margin-bottom: 8px;
+}
+
+.google-box ul li a {
+  color: #1a0dab;
+  text-decoration: none;
+}
+
+.google-box ul li a:hover {
+  text-decoration: underline;
+}
+
+.tiktok-box {
+  width: 120px; 
+  position: relative;
+  text-align: left;
+  padding: 0;
+  top: 30px;
+  left: 25%;
+}
+
+.instagram-box{
+  width: 300px; 
+  padding: 0px;
+  top: 100px;
+  left: 40px;
+  border-radius: 20px; 
+}
+
+.node-header {
+  position: relative;
+  height: 0; 
+}
+
+.platform-logo {
+  position: absolute;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: auto;
+}
+
+.platform-img {
+  width: 100%;
+  border-radius: 12px; 
+  display: block;
+}

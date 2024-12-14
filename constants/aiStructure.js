@@ -29,14 +29,47 @@ const classifySchema = jsonSchema({
     additionalProperties: false,
 });
 
-const classifyAIObject = (model, content) => ({
+const classifySchemaWithDescription = jsonSchema({
+    type: "object",
+    properties: {
+        categories: {
+            type: "string",
+            enum: [
+                'sightseeing_&_landmark',
+                'arts_&_culture',
+                'entertainment_&_nightlife',
+                'dinning_&_culinary',
+                'shopping',
+                'outdoor_&_natural'
+            ]
+        },
+        sub_categories: {
+            type: "array",
+            items: { type: "string" },
+            description: "General categories describing the place (e.g., architecture, history, family-friendly, nightlife)."
+        },
+        keywords: {
+            type: "array",
+            items: { type: "string" },
+            description: "Keywords that describe the place, its ambiance, features, and other attributes."
+        },
+        description: {
+            type: "string",
+            description: "Use the content and write a really short description for the place."
+        }
+    },
+    required: ["categories", "sub_categories", "keywords", "description"],
+    additionalProperties: false,
+});
+
+const classifyAIObject = (model, content, description=false) => ({
     model: model,
     schemaName: 'place_category_extraction',
     schemaDescription: `
     Analyze the webpage content and classify it based on the place's attributes. 
     Identify the most relevant categories, sub-categories, and related keywords.
     `,
-    schema: classifySchema,
+    schema: description? classifySchemaWithDescription: classifySchema,
     prompt: `
     You are an expert content parser. Your task is to analyze the following webpage content and classify it based on the place's attributes.
 

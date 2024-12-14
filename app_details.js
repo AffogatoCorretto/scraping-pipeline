@@ -10,7 +10,7 @@ const { classifyAIObject } = require('./constants/aiStructure');
 
 async function __scroll_to_bottom(page, classname, repeat){
     for(let i=0;i<repeat;i++){
-        await page.waitForTimeout(1500);
+        await page.waitForTimeout(500);
 
         await page.evaluate((classname) => {
             const element = document.querySelector(classname);
@@ -31,23 +31,30 @@ async function __scroll_to_bottom(page, classname, repeat){
 }
 
 async function extractWebsiteContents(page_details){
-    const combinedContent = await fetchWebsiteContent(page_details.place_relevant_websites);
+    let combinedContent = await fetchWebsiteContent(page_details.place_relevant_websites);
+    const words = combinedContent.split(/\s+/, 21001);
+    combinedContent = words.length > 21000 
+    ? words.slice(0, 21000).join(' ')
+    : combinedContent;
 
     const openai = createOpenAI({
         apiKey: process.env.OPENAI_API_KEY,
       });
     const model = openai.chat("gpt-4o-2024-08-06", { structuredOutputs: true });
 
-    const result = await generateObject(classifyAIObject(model, combinedContent));
+    const result = await generateObject(classifyAIObject(model, combinedContent, page_details.place_descriptions == ''));
 
     page_details.place_categories = result.object.categories;
     page_details.place_sub_categories = result.object.sub_categories;
     page_details.place_keywords = result.object.keywords;
+    if(page_details.place_descriptions == ''){
+        page_details.place_descriptions = result.object.description;
+    }
     return page_details;
 }
 
 (async () => {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
 
   const page = await context.newPage();
@@ -58,7 +65,9 @@ async function extractWebsiteContents(page_details){
     fs.writeFileSync(outputFilePath, `${Object.keys(PlaceModel).join(",")}\n`);
   }
 
-  const gemsFilePath = 'data/extracted_gems.csv';
+  let gemsFilePath = 'data/extracted_gems.csv';
+  const gemsFilePath2 = 'data/city_places.csv';
+  gemsFilePath = gemsFilePath2;
   if (!fs.existsSync(gemsFilePath)) {
     console.error(`File not found: ${gemsFilePath}`);
     process.exit(1);
@@ -71,7 +80,7 @@ async function extractWebsiteContents(page_details){
   const parsedDetailedData = Papa.parse(placesDetailedCsv, { header: true}).data; 
   const extractedPlaces = new Set(parsedDetailedData.map(row => row.place_name?.trim()).filter(name => name));
 
-  const placesToProcess = parsedData.filter(row => row.status === 'not_extracted');
+  let placesToProcess = parsedData.filter(row => row.status === 'not_extracted');
 
   const results = [];
 
@@ -179,9 +188,19 @@ async function extractWebsiteContents(page_details){
     const selector = `div.m6QErb.DxyBCb.kA9KIf.dS8AEf.XiKgde.ecceSd[aria-label="Results for ${placeName}"]`;
     const resultsContainer = await page.$(selector);
     if (resultsContainer) {  
-        const firstOption = await resultsContainer.$('div.Nv2PK.tH5CWc.THOPZb > a');
+        const firstOption = await resultsContainer.$('div.Nv2PK.THOPZb.CpccDe  > a');
         if (firstOption) {
+            const ariaLabel = await firstOption.evaluate(el => el.getAttribute('aria-label'));
             await firstOption.click();
+            const placeSelector = `div.m6QErb.WNBkOb.XiKgde[aria-label="${ariaLabel}"]`;
+            const placeContainer = await page.waitForSelector(placeSelector);
+            let placeAddressDiv = await page.$('[data-item-id="address"]');
+            const placeAddress = (await placeAddressDiv.textContent()).trim();
+                
+            const query = `${ariaLabel} ${placeAddress.split(",")[0]} review`;
+            const searchLink = `https://www.google.com/maps/search/${encodeURIComponent(query)}`
+            await page.goto(searchLink, { waitUntil: 'networkidle' });
+            placeIdentified = true;
         } else {
             const fallbackOptions = await resultsContainer.$$('div.Nv2PK.Q2HXcd.THOPZb > a');
             if (fallbackOptions.length > 0) {
@@ -311,7 +330,9 @@ async function extractWebsiteContents(page_details){
       await extractFromGoogleMaps(place.place_name, place_details);
     //   const wikipediaDetails = await extractFromWikipedia(place.place_name);
 
-      if (!extractedPlaces.has(place_details.place_name)) {
+      let addArr = place_details.place_address.split(" ");
+
+      if (!extractedPlaces.has(place_details.place_name) && addArr[addArr.length-2]=="NY") {
 
         if(place_details.place_images.length > 0){
 
@@ -322,6 +343,7 @@ async function extractWebsiteContents(page_details){
             extractedPlaces.add(place_details.place_name);
             const csvRow = Papa.unparse([place_details], { header: false }).trim(); 
             fs.appendFileSync(outputFilePath, `${csvRow}\n`);
+            console.log("[Place added]")
         
             parsedData.forEach(row => {
                 if (row.place_name === place.place_name) {
@@ -342,9 +364,9 @@ async function extractWebsiteContents(page_details){
 
   }
 
-  const detailedCsv = Papa.unparse(results, { header: true });
-  fs.writeFileSync(outputFilePath, detailedCsv);
-  console.log(`Detailed information saved to ${outputFilePath}`);
+//   const detailedCsv = Papa.unparse(results, { header: true });
+//   fs.writeFileSync(outputFilePath, detailedCsv);
+//   console.log(`Detailed information saved to ${outputFilePath}`);
 
   await browser.close();
 })();

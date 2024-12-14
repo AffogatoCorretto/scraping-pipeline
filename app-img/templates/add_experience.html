@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"
+    />
+    <title>Add Experience</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        display: flex;
+      }
+      #search-section {
+        flex: 1;
+        margin-right: 20px;
+      }
+      #search-bar {
+        width: 100%;
+        max-width: 500px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #results {
+        margin-bottom: 60px;
+      }
+      .experience-entry {
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .copy-btn {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 5px;
+      }
+      .copy-btn:hover {
+        background-color: #0056b3;
+      }
+      .added-experiences {
+        width: 300px;
+        border-left: 1px solid #ccc;
+        padding-left: 20px;
+        overflow-y: auto;
+      }
+      .added-experience {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .bottom-fixed-button {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        text-align: center;
+        border-top: 1px solid #ccc;
+        padding: 10px;
+      }
+      .bottom-fixed-button button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="search-section">
+      <h1>Add a experience</h1>
+      <input
+        type="text"
+        id="search-bar"
+        placeholder="Enter the experience name..."
+      />
+      <div id="results"></div>
+    </div>
+
+    <div class="added-experiences">
+      <h2>Added experiences</h2>
+      <div id="added-experiences-list"></div>
+    </div>
+
+    <div class="bottom-fixed-button">
+      <label> <input type="checkbox" id="select-all" /> Select All </label>
+      <button id="add-btn">Add experience</button>
+    </div>
+
+    <script>
+      const searchBar = document.getElementById("search-bar");
+      const resultsDiv = document.getElementById("results");
+      const selectAllCheckbox = document.getElementById("select-all");
+      const addButton = document.getElementById("add-btn");
+      const addedexperiencesList = document.getElementById("added-experiences-list");
+
+      // This variable comes from Flask via the template rendering
+      const addedexperiences = {{ addedexperiences | tojson }};
+
+      // Display the list of added experiences
+      function displayAddedexperiences(experiences) {
+        addedexperiencesList.innerHTML = "";
+        experiences.forEach((experience) => {
+          const entry = document.createElement("div");
+          entry.className = "added-experience";
+          entry.textContent = experience.experience;
+          addedexperiencesList.appendChild(entry);
+        });
+      }
+
+      // Initial display of all added experiences
+      displayAddedexperiences(addedexperiences);
+
+      // Filter added experiences based on search input
+      searchBar.addEventListener("input", () => {
+        const query = searchBar.value.trim().toLowerCase();
+        const filteredexperiences = addedexperiences.filter((experience) =>
+          experience.experience.toLowerCase().includes(query)
+        );
+        displayAddedexperiences(filteredexperiences);
+      });
+
+      // Existing functionality - Fetch matching experiences on input
+      searchBar.addEventListener("input", async () => {
+        const query = searchBar.value.trim();
+        if (query.length > 2) {
+          const response = await fetch(`/search_experience?query=${query}`);
+          const experiences = await response.json();
+          displayResults(experiences);
+        } else {
+          resultsDiv.innerHTML = "";
+        }
+      });
+
+      // Existing functionality - Display fetched experiences
+      function displayResults(experiences) {
+        resultsDiv.innerHTML = "";
+
+        if (experiences.length === 0) {
+          resultsDiv.innerHTML = "<p>No matching experiences found.</p>";
+          return;
+        }
+
+        experiences.forEach((experience) => {
+          const entry = document.createElement("div");
+          entry.className = "experience-entry";
+
+          const experienceInfo = document.createElement("span");
+          experienceInfo.textContent = `${experience.rest_name} - ${experience.rest_address}, ${experience.rest_zipcode}`;
+          experienceInfo.className = "experience-info";
+
+          const copyButton = document.createElement("button");
+          copyButton.textContent = "Copy";
+          copyButton.className = "copy-btn";
+          copyButton.addEventListener("click", () =>
+            copyToClipboard(experience.rest_name)
+          );
+
+          entry.appendChild(experienceInfo);
+          entry.appendChild(copyButton);
+          resultsDiv.appendChild(entry);
+        });
+      }
+
+      // Existing functionality - Copy experience name to clipboard
+      async function copyToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (err) {
+          console.error("Failed to copy using clipboard API: ", err);
+          fallbackCopyTextToClipboard(text);
+        }
+      }
+
+      // Existing fallback for copy functionality
+      function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = 0;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          const successful = document.execCommand("copy");
+          const msg = successful ? "Copied to clipboard!" : "Failed to copy!";
+        } catch (err) {
+          console.error("Fallback: Unable to copy", err);
+        }
+
+        document.body.removeChild(textArea);
+      }
+
+      // Existing functionality - Handle Add button click
+      addButton.addEventListener("click", async () => {
+        const experienceName = searchBar.value.trim();
+
+        if (!experienceName) {
+          alert("Please enter a experience name.");
+          return;
+        }
+
+        const experienceData = {
+          experience_name: experienceName,
+          zipcode: "10001",
+          no_of_rest: selectAllCheckbox.checked ? "all" : "",
+        };
+
+        try {
+          const response = await fetch("/add_experience", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(experienceData),
+          });
+
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.error || "Failed to add experience.");
+          }
+
+          alert(result.message);
+          searchBar.value = "";
+          resultsDiv.innerHTML = "";
+        } catch (error) {
+          console.error("Error adding experience:", error);
+          alert("Failed to add experience. Please try again.");
+        }
+      });
+    </script>
+  </body>
+</html>

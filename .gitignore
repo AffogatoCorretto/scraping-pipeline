@@ -5,3 +5,5 @@ website_content/
 data/
 
 .env
+
+.DS_Store

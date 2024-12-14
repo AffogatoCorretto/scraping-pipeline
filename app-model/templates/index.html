@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flowchart Example</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Main horizontal flow of major nodes -->
+      <div class="main-flow">
+        <div class="node" id="extract-box">
+          <h3>Extract</h3>
+          <p>Immediate & in-depth results</p>
+        </div>
+
+        <div class="node" id="direct-gems-box">
+          <h3>Direct Gems</h3>
+          <p>Collect relevant links & gems</p>
+        </div>
+
+        <div class="node" id="content-analysis-box">
+          <h3>Content Analysis</h3>
+          <p>Use NER & OpenAI models</p>
+        </div>
+
+        <div class="node" id="indexing-pipeline-box">
+          <h3>Indexing Pipeline</h3>
+          <p>Enriched dataset pipeline</p>
+        </div>
+      </div>
+
+      <!-- Extra nodes above (Google, Reddit) -->
+      <div class="top-nodes">
+        <!-- Google node with typewriter effect -->
+        <div
+          class="node extra-node google-box"
+          id="google-box"
+          data-text="hidden spots in nyc"
+        >
+          <div class="google-search-bar">
+            <svg
+              class="google-g"
+              fill="#000000"
+              height="16"
+              width="16"
+              version="1.1"
+              viewBox="0 0 210 210"
+            >
+              <path
+                d="M0,105C0,47.103,47.103,0,105,0c23.383,0,45.515,7.523,64.004,21.756l-24.4,31.696C133.172,44.652,119.477,40,105,40
+                  c-35.841,0-65,29.159-65,65s29.159,65,65,65c28.867,0,53.398-18.913,61.852-45H105V85h105v20c0,57.897-47.103,105-105,105
+                  S0,162.897,0,105z"
+              />
+            </svg>
+            <div class="typewriter"></div>
+          </div>
+          <ul>
+            <li><a href="#">https://tripadvisor.com/attractions-nyc</a></li>
+            <li><a href="#">https://timeout.com/things-to-do/secret-nyc</a></li>
+            <li>
+              <a href="#">https://aworldtotravel.com/nyc-hidden-gems-locals</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="node extra-node reddit-box" id="reddit-box">
+          <img
+            class="reddit-img"
+            src="{{ url_for('static', filename='public/reddit.png') }}"
+            alt="Reddit"
+          />
+        </div>
+      </div>
+
+      <!-- Extra nodes below (TikTok/Instagram and another node) -->
+      <div class="bottom-nodes">
+        <div class="node extra-node tiktok-box" id="tiktok-box">
+          <div class="node-header">
+            <img
+              class="platform-logo"
+              src="{{ url_for('static', filename='public/tiktok-logo.webp') }}"
+              alt="Tiktok Logo"
+            />
+          </div>
+          <img
+            class="platform-img"
+            src="{{ url_for('static', filename='public/tiktok.jpeg') }}"
+            alt="Tiktok Content"
+          />
+        </div>
+
+        <div class="node extra-node instagram-box" id="instagram-box">
+          <div class="node-header">
+            <img
+              class="platform-logo"
+              src="{{ url_for('static', filename='public/instagram-logo.svg') }}"
+              alt="Instagram Logo"
+            />
+          </div>
+          <img
+            class="platform-img"
+            src="{{ url_for('static', filename='public/instagram.png') }}"
+            alt="Instagram Content"
+          />
+        </div>
+
+        <div class="node extra-node another-extra-box" id="another-extra-box">
+          <h3>Extra Node Below</h3>
+          <p>Additional Info</p>
+        </div>
+      </div>
+
+      <svg
+        class="connections"
+        width="2000"
+        height="2000"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Paths -->
+        <path id="google-to-extract" class="connection-path" />
+        <path id="reddit-to-extract" class="connection-path" />
+        <path id="instagram-to-extract" class="connection-path" />
+        <path id="tiktok-to-extract" class="connection-path" />
+        <path id="extract-to-direct-gems" class="connection-path" />
+        <path id="direct-gems-to-content" class="connection-path" />
+        <path id="content-to-indexing" class="connection-path" />
+        <path id="another-to-content" class="connection-path" />
+      </svg>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
