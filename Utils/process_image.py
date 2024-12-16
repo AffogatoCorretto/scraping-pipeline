@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 from random import sample
 
-INPUT_FILE = "data/places_detailed.csv"
+INPUT_FILE = "data/places_selected_final.csv"
 OUTPUT_FILE = "data/places_detailed_cloudflare.csv"
 OUTPUT_DIR = "images"
 CLOUDFLARE_UPLOAD_URL = "https://api.cloudflare.com/client/v4/accounts/a9fc6b705a3b059d93f090ae8deb4c48/images/v1"

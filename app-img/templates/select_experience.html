@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Place</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <!-- Counter -->
+    <div class="top-right-counter">
+      <p>Places Left: <span id="places-left">{{ total_places }}</span></p>
+    </div>
+
+    <div class="container">
+      <div class="place-details">
+        <h1 class="place-title">{{ place.place_name }}</h1>
+        <p><strong>Description:</strong> {{ place.place_descriptions }}</p>
+        <p><strong>Address:</strong> {{ place.place_address }}</p>
+        <p><strong>Zip Code:</strong> {{ place.place_zipcode }}</p>
+        <p><strong>Place Category:</strong> {{ place.place_categories }}</p>
+        <p><strong>Coordinates:</strong> {{ place.place_coordinates }}</p>
+      </div>
+
+      {% if images %}
+      <div class="image-gallery">
+        {% for image_url in images %}
+        <div class="image-container">
+          <img src="{{ image_url }}" alt="Image of {{ place.place_name }}" />
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="no-images">No images available for this place.</p>
+      {% endif %}
+    </div>
+
+    <div class="bottom-fixed-buttons">
+      <button id="cancel-btn" class="cancel-button">❌ Cancel</button>
+      <button id="select-btn" class="select-button">✅ Select</button>
+    </div>
+
+    <script>
+      document.getElementById("cancel-btn").addEventListener("click", () => {
+        processExperience("cancel");
+      });
+
+      document.getElementById("select-btn").addEventListener("click", () => {
+        processExperience("select");
+      });
+
+      function processExperience(action) {
+        fetch("/process_experience", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            place_id: "{{ place_id }}",
+            action: action,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              // Update remaining places count dynamically
+              if (data.remaining_places !== undefined) {
+                document.getElementById("places-left").textContent =
+                  data.remaining_places;
+              }
+              window.location.href = "/select_experience";
+            }
+          })
+          .catch((err) => console.error("Error:", err));
+      }
+    </script>
+  </body>
+</html>

@@ -54,7 +54,7 @@ async function extractWebsiteContents(page_details){
 }
 
 (async () => {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
 
   const page = await context.newPage();
@@ -66,7 +66,7 @@ async function extractWebsiteContents(page_details){
   }
 
   let gemsFilePath = 'data/extracted_gems.csv';
-  const gemsFilePath2 = 'data/city_places.csv';
+  const gemsFilePath2 = 'data/final_places.csv';
   gemsFilePath = gemsFilePath2;
   if (!fs.existsSync(gemsFilePath)) {
     console.error(`File not found: ${gemsFilePath}`);
@@ -188,7 +188,7 @@ async function extractWebsiteContents(page_details){
     const selector = `div.m6QErb.DxyBCb.kA9KIf.dS8AEf.XiKgde.ecceSd[aria-label="Results for ${placeName}"]`;
     const resultsContainer = await page.$(selector);
     if (resultsContainer) {  
-        const firstOption = await resultsContainer.$('div.Nv2PK.THOPZb.CpccDe  > a');
+        const firstOption = await resultsContainer.$('div.Nv2PK.THOPZb  > a');
         if (firstOption) {
             const ariaLabel = await firstOption.evaluate(el => el.getAttribute('aria-label'));
             await firstOption.click();
@@ -352,6 +352,9 @@ async function extractWebsiteContents(page_details){
             });
             //   const updatedCsv = Papa.unparse(parsedData, { header: true });
             //   fs.writeFileSync(gemsFilePath, updatedCsv);
+        }
+        else{
+            console.log(`[Skipping place IMGS] ${place_details.place_name}`)
         }
       }
       else{

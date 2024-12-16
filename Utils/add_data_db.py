@@ -21,6 +21,8 @@ def format_place_data(row):
         "description": row.get("place_descriptions", ""),
         "latitude": float(coordinates[0]) if coordinates[0] else None,
         "longitude": float(coordinates[1]) if coordinates[1] else None,
+        "itemAddress": row.get("place_address",""),
+        "itemZipcode": row.get("place_zipcode",""),
         "priceRange": row.get("place_price_range", "Moderate"),
         "historicalSignificance": False,  # Default value; adjust if data is available
         "culturalAuthenticity": None,     # Adjust if data is available
@@ -79,6 +81,9 @@ if __name__ == "__main__":
 
     # Iterate through each row and send data
     for idx, row in df.iterrows():
-        formatted_data = format_place_data(row)
-        print(f"Sending data for: {formatted_data['itemName']}")
-        send_place_data(formatted_data)
+        try:
+            formatted_data = format_place_data(row)
+            print(f"Sending data for: {formatted_data['itemName']}")
+            send_place_data(formatted_data)
+        except Exception as e:
+            print("Skipping "+row["place_name"])

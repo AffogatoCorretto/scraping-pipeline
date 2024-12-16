@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f9f9f9;
+  font-family: 'Inter', sans-serif;
+  background: #F8FAFF;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -30,14 +30,17 @@ body {
 /* Base styling for nodes */
 .node {
   background: #ffffff;
-  border: 1px solid #ccc;
   border-radius: 20px;
   padding: 10px; /* Reduced padding */
   width: 250px; /* Increased width for more room */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   text-align: center;
   position: relative;
   box-sizing: border-box;
+}
+
+.main-flow > div{
+  border-radius: 25px;
 }
 
 .node h3 {

@@ -1,22 +1,162 @@
-#image-gallery img {
-    width: 150px;
-    height: 150px;
-    margin: 10px;
+/* Global Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #f0f4ff, #e8ecf9); /* Updated gradient for softer tones */
+    color: #333;
+}
+
+/* Container Styling */
+.container {
+    max-width: 900px; /* Maximum width for content */
+    margin: 40px auto; /* Center horizontally */
+    padding: 20px;
+    background: white;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+    transform: scale(1.01); /* Slightly enlarge on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+}
+
+/* Typography */
+h1 {
+    font-size: 2.4em;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #444;
+}
+
+p {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #555; /* Softer gray for text */
+    line-height: 1.6; /* Better readability */
+}
+
+/* Image Gallery */
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid layout */
+    gap: 15px;
+    margin: 25px 0;
+    justify-content: center;
+}
+
+.image-gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-gallery img:hover {
+    transform: scale(1.05); /* Smooth zoom-in effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Fixed Buttons */
+.bottom-fixed-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: white;
+    padding: 15px 0;
+    border-top: 2px solid #ddd;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+.bottom-fixed-buttons:hover {
+    background-color: #f9f9f9; /* Slight highlight effect */
+}
+
+button {
+    width: 45%; /* Increased width for better visibility */
+    max-width: 350px;
+    padding: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    border: 2px solid transparent;
-    transition: border 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#image-gallery img.selected {
-    border-color: rgba(0, 0, 0, 0.446);
+button.cancel-button {
+    background: #ff4c4c;
+    color: white;
 }
 
-.selectable-image {
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border 0.3s;
+button.cancel-button:hover {
+    background: #e63939;
+    transform: scale(1.05);
 }
 
-.selectable-image.selected {
-    border: 2px solid rgb(0, 0, 0);
+button.select-button {
+    background: #4caf50;
+    color: white;
+}
+
+button.select-button:hover {
+    background: #388e3c;
+    transform: scale(1.05);
+}
+
+/* Responsive Buttons */
+@media (max-width: 600px) {
+    button {
+        width: 80%; /* Full width for smaller screens */
+        max-width: none;
+    }
+
+    .bottom-fixed-buttons {
+        flex-direction: column; /* Stack buttons vertically on small screens */
+        gap: 10px;
+    }
+}
+
+/* Counter Styles */
+.top-right-counter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #007bff; /* Bright blue background */
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    z-index: 1000;
+    text-align: center;
+}
+
+.top-right-counter p {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.top-right-counter span {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Enhanced Accessibility */
+button:focus {
+    outline: 3px solid #ffd700; /* Yellow focus ring for accessibility */
+}
+
+img:focus {
+    outline: 3px solid #007bff; /* Blue focus ring for images */
+    transform: scale(1.08);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
